@@ -1,0 +1,46 @@
+name: CI - Integración Continua
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout del Código
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    # Pruebas del Backend
+    - name: Instalación de Dependencias del Backend
+      run: npm install
+      working-directory: ./backend
+
+    - name: Ejecutar Lint (Backend)
+      run: npm run lint
+      working-directory: ./backend
+
+    - name: Ejecutar Pruebas Unitarias (Backend)
+      run: npm run test:unit
+      working-directory: ./backend
+
+    # Pruebas del Frontend
+    - name: Instalación de Dependencias del Frontend
+      run: npm install
+      working-directory: ./frontend
+
+    - name: Ejecutar Lint (Frontend)
+      run: npm run lint
+      working-directory: ./frontend
+
+    - name: Ejecutar Build del Frontend
+      run: npm run build
+      working-directory: ./frontend
